@@ -4795,7 +4795,6 @@ void loaderScanForLayers(struct loader_instance *inst, struct loader_layer_list 
     if (manifest_files.count == 0 && total_count == 0) {
         goto out;
     } else {
-        total_count += manifest_files.count;
         for (uint32_t i = 0; i < manifest_files.count; i++) {
             file_str = manifest_files.filename_list[i];
             if (file_str == NULL) {
