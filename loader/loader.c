@@ -2915,7 +2915,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
     {                                                                      \
         var = cJSON_GetObjectItem(node, #var);                             \
         if (var == NULL) {                                                 \
-            layer_node = layer_node->next;                                 \
             loader_log(inst, VULKAN_LOADER_WARN_BIT, 0,                    \
                        "Didn't find required layer object %s in manifest " \
                        "JSON file, skipping this layer",                   \
@@ -2927,7 +2926,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
     {                                                                          \
         item = cJSON_GetObjectItem(node, #var);                                \
         if (item == NULL) {                                                    \
-            layer_node = layer_node->next;                                     \
             loader_log(inst, VULKAN_LOADER_WARN_BIT, 0,                        \
                        "Didn't find required layer value %s in manifest JSON " \
                        "file, skipping this layer",                            \
@@ -2936,7 +2934,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
         }                                                                      \
         temp = cJSON_Print(item);                                              \
         if (temp == NULL) {                                                    \
-            layer_node = layer_node->next;                                     \
             loader_log(inst, VULKAN_LOADER_WARN_BIT, 0,                        \
                        "Problem accessing layer value %s in manifest JSON "    \
                        "file, skipping this layer",                            \
@@ -2957,8 +2954,7 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
 
     // Add list entry
     if (!strcmp(type, "DEVICE")) {
-        loader_log(inst, VULKAN_LOADER_WARN_BIT | VULKAN_LOADER_LAYER_BIT, 0, "Device layers are deprecated skipping this layer");
-        layer_node = layer_node->next;
+        loader_log(inst, VULKAN_LOADER_WARN_BIT | VULKAN_LOADER_LAYER_BIT, 0, "Device layers are deprecated. Skipping this layer");
         goto out;
     }
 
@@ -2966,7 +2962,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
     // layers that must work with older loaders
     if (!strcmp(type, "INSTANCE") || !strcmp(type, "GLOBAL")) {
         if (layer_instance_list == NULL) {
-            layer_node = layer_node->next;
             goto out;
         }
         props = loaderGetNextLayerPropertySlot(inst, layer_instance_list);
@@ -2980,7 +2975,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
             props->type_flags |= VK_LAYER_TYPE_FLAG_EXPLICIT_LAYER;
         }
     } else {
-        layer_node = layer_node->next;
         goto out;
     }
 
@@ -3067,7 +3061,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
 
         temp = cJSON_Print(library_path);
         if (NULL == temp) {
-            layer_node = layer_node->next;
             loader_log(inst, VULKAN_LOADER_WARN_BIT, 0,
                        "Problem accessing layer value library_path in manifest JSON file, skipping this layer");
             result = VK_ERROR_OUT_OF_HOST_MEMORY;
@@ -3232,7 +3225,6 @@ static VkResult loaderReadLayerJson(const struct loader_instance *inst, struct l
         if (!disable_environment || !disable_environment->child) {
             loader_log(inst, VULKAN_LOADER_WARN_BIT, 0,
                        "Didn't find required layer child value disable_environment in manifest JSON file, skipping this layer");
-            layer_node = layer_node->next;
             goto out;
         }
         strncpy(props->disable_env_var.name, disable_environment->child->string, sizeof(props->disable_env_var.name));
