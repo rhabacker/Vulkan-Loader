@@ -8288,15 +8288,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceFeatures2(VkPhysicalDevic
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceFeatures2 fpGetPhysicalDeviceFeatures2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceFeatures2 = icd_term->dispatch.GetPhysicalDeviceFeatures2KHR;
     } else {
         fpGetPhysicalDeviceFeatures2 = icd_term->dispatch.GetPhysicalDeviceFeatures2;
     }
 
-    if (fpGetPhysicalDeviceFeatures2 != NULL || !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (fpGetPhysicalDeviceFeatures2 == NULL && !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceFeatures2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceFeatures2 != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceFeatures2(phys_dev_term->phys_dev, pFeatures);
     } else {
@@ -8341,15 +8348,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceProperties2(VkPhysicalDev
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceProperties2 fpGetPhysicalDeviceProperties2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceProperties2 = icd_term->dispatch.GetPhysicalDeviceProperties2KHR;
     } else {
         fpGetPhysicalDeviceProperties2 = icd_term->dispatch.GetPhysicalDeviceProperties2;
     }
 
-    if (fpGetPhysicalDeviceProperties2 != NULL || !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (fpGetPhysicalDeviceProperties2 == NULL && !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceProperties2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceProperties2 != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceProperties2(phys_dev_term->phys_dev, pProperties);
     } else {
@@ -8401,15 +8415,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceFormatProperties2(VkPhysi
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceFormatProperties2 fpGetPhysicalDeviceFormatProperties2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceFormatProperties2 = icd_term->dispatch.GetPhysicalDeviceFormatProperties2KHR;
     } else {
         fpGetPhysicalDeviceFormatProperties2 = icd_term->dispatch.GetPhysicalDeviceFormatProperties2;
     }
 
-    if (fpGetPhysicalDeviceFormatProperties2 != NULL || !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (fpGetPhysicalDeviceFormatProperties2 == NULL && !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceFormatProperties2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceFormatProperties2 != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceFormatProperties2(phys_dev_term->phys_dev, format, pFormatProperties);
     } else {
@@ -8436,15 +8457,22 @@ VKAPI_ATTR VkResult VKAPI_CALL terminator_GetPhysicalDeviceImageFormatProperties
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceImageFormatProperties2 fpGetPhysicalDeviceImageFormatProperties2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceImageFormatProperties2 = icd_term->dispatch.GetPhysicalDeviceImageFormatProperties2KHR;
     } else {
         fpGetPhysicalDeviceImageFormatProperties2 = icd_term->dispatch.GetPhysicalDeviceImageFormatProperties2;
     }
 
-    if (fpGetPhysicalDeviceImageFormatProperties2 != NULL || !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (fpGetPhysicalDeviceImageFormatProperties2 == NULL && !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceImageFormatProperties2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceImageFormatProperties2 != NULL) {
         // Pass the call to the driver
         return fpGetPhysicalDeviceImageFormatProperties2(phys_dev_term->phys_dev, pImageFormatInfo, pImageFormatProperties);
     } else {
@@ -8473,15 +8501,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceQueueFamilyProperties2(Vk
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceQueueFamilyProperties2 fpGetPhysicalDeviceQueueFamilyProperties2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceQueueFamilyProperties2 = icd_term->dispatch.GetPhysicalDeviceQueueFamilyProperties2KHR;
     } else {
         fpGetPhysicalDeviceQueueFamilyProperties2 = icd_term->dispatch.GetPhysicalDeviceQueueFamilyProperties2;
     }
 
-    if (fpGetPhysicalDeviceQueueFamilyProperties2 != NULL || !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (fpGetPhysicalDeviceQueueFamilyProperties2 == NULL && !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceQueueFamilyProperties2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceQueueFamilyProperties2 != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceQueueFamilyProperties2(phys_dev_term->phys_dev, pQueueFamilyPropertyCount, pQueueFamilyProperties);
     } else {
@@ -8528,15 +8563,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceMemoryProperties2(VkPhysi
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceMemoryProperties2 fpGetPhysicalDeviceMemoryProperties2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceMemoryProperties2 = icd_term->dispatch.GetPhysicalDeviceMemoryProperties2KHR;
     } else {
         fpGetPhysicalDeviceMemoryProperties2 = icd_term->dispatch.GetPhysicalDeviceMemoryProperties2;
     }
 
-    if (fpGetPhysicalDeviceMemoryProperties2 != NULL || !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (fpGetPhysicalDeviceMemoryProperties2 == NULL && !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceMemoryProperties2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceMemoryProperties2 != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceMemoryProperties2(phys_dev_term->phys_dev, pMemoryProperties);
     } else {
@@ -8563,16 +8605,23 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceSparseImageFormatProperti
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties2 fpGetPhysicalDeviceSparseImageFormatProperties2 = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+    if (inst->enabled_known_extensions.khr_get_physical_device_properties2) {
         fpGetPhysicalDeviceSparseImageFormatProperties2 = icd_term->dispatch.GetPhysicalDeviceSparseImageFormatProperties2KHR;
     } else {
         fpGetPhysicalDeviceSparseImageFormatProperties2 = icd_term->dispatch.GetPhysicalDeviceSparseImageFormatProperties2;
     }
 
-    if (fpGetPhysicalDeviceSparseImageFormatProperties2 != NULL ||
+    if (fpGetPhysicalDeviceSparseImageFormatProperties2 == NULL &&
         !inst->enabled_known_extensions.khr_get_physical_device_properties2) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceSparseImageFormatProperties2: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceSparseImageFormatProperties2 != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceSparseImageFormatProperties2(phys_dev_term->phys_dev, pFormatInfo, pPropertyCount, pProperties);
     } else {
@@ -8630,15 +8679,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceExternalBufferProperties(
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceExternalBufferProperties fpGetPhysicalDeviceExternalBufferProperties = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_external_memory_capabilities) {
+    if (inst->enabled_known_extensions.khr_external_memory_capabilities) {
         fpGetPhysicalDeviceExternalBufferProperties = icd_term->dispatch.GetPhysicalDeviceExternalBufferPropertiesKHR;
     } else {
         fpGetPhysicalDeviceExternalBufferProperties = icd_term->dispatch.GetPhysicalDeviceExternalBufferProperties;
     }
 
-    if (fpGetPhysicalDeviceExternalBufferProperties || !inst->enabled_known_extensions.khr_external_memory_capabilities) {
+    if (fpGetPhysicalDeviceExternalBufferProperties == NULL && !inst->enabled_known_extensions.khr_external_memory_capabilities) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceExternalBufferProperties: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceExternalBufferProperties != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceExternalBufferProperties(phys_dev_term->phys_dev, pExternalBufferInfo, pExternalBufferProperties);
     } else {
@@ -8670,16 +8726,23 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceExternalSemaphoreProperti
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceExternalSemaphoreProperties fpGetPhysicalDeviceExternalSemaphoreProperties = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_external_semaphore_capabilities) {
+    if (inst->enabled_known_extensions.khr_external_semaphore_capabilities) {
         fpGetPhysicalDeviceExternalSemaphoreProperties = icd_term->dispatch.GetPhysicalDeviceExternalSemaphorePropertiesKHR;
     } else {
         fpGetPhysicalDeviceExternalSemaphoreProperties = icd_term->dispatch.GetPhysicalDeviceExternalSemaphoreProperties;
     }
 
-    if (fpGetPhysicalDeviceExternalSemaphoreProperties != NULL ||
+    if (fpGetPhysicalDeviceExternalSemaphoreProperties == NULL &&
         !inst->enabled_known_extensions.khr_external_semaphore_capabilities) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceExternalSemaphoreProperties: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceExternalSemaphoreProperties != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceExternalSemaphoreProperties(phys_dev_term->phys_dev, pExternalSemaphoreInfo,
                                                        pExternalSemaphoreProperties);
@@ -8714,15 +8777,22 @@ VKAPI_ATTR void VKAPI_CALL terminator_GetPhysicalDeviceExternalFenceProperties(
     struct loader_icd_term *icd_term = phys_dev_term->this_icd_term;
     const struct loader_instance *inst = icd_term->this_instance;
 
+    assert(inst != NULL && "Instance must be valid");
+
     // Get the function pointer to use to call into the ICD. This could be the core or KHR version
     PFN_vkGetPhysicalDeviceExternalFenceProperties fpGetPhysicalDeviceExternalFenceProperties = NULL;
-    if (inst != NULL && inst->enabled_known_extensions.khr_external_fence_capabilities) {
+    if (inst->enabled_known_extensions.khr_external_fence_capabilities) {
         fpGetPhysicalDeviceExternalFenceProperties = icd_term->dispatch.GetPhysicalDeviceExternalFencePropertiesKHR;
     } else {
         fpGetPhysicalDeviceExternalFenceProperties = icd_term->dispatch.GetPhysicalDeviceExternalFenceProperties;
     }
 
-    if (fpGetPhysicalDeviceExternalFenceProperties != NULL || !inst->enabled_known_extensions.khr_external_fence_capabilities) {
+    if (fpGetPhysicalDeviceExternalFenceProperties == NULL && !inst->enabled_known_extensions.khr_external_fence_capabilities) {
+        loader_log(NULL, VULKAN_LOADER_ERROR_BIT, 0, "vkGetPhysicalDeviceExternalFenceProperties: Core function is NULL");
+        abort();
+    }
+
+    if (fpGetPhysicalDeviceExternalFenceProperties != NULL) {
         // Pass the call to the driver
         fpGetPhysicalDeviceExternalFenceProperties(phys_dev_term->phys_dev, pExternalFenceInfo, pExternalFenceProperties);
     } else {
