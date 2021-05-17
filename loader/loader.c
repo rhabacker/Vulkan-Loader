@@ -149,6 +149,7 @@ void *loader_instance_heap_alloc(const struct loader_instance *instance, size_t 
         pMemory = instance->alloc_callbacks.pfnAllocation(instance->alloc_callbacks.pUserData, size, sizeof(uint64_t), alloc_scope);
     } else {
 #endif
+        assert(size > 0 && "The behavior of mallocs undefined if size is zero");
         pMemory = malloc(size);
     }
 
@@ -7610,11 +7611,13 @@ VKAPI_ATTR VkResult VKAPI_CALL terminator_EnumerateDeviceExtensionProperties(VkP
         if (res != VK_SUCCESS) {
             goto out;
         }
-        icd_props_list = loader_instance_heap_alloc(icd_term->this_instance, sizeof(VkExtensionProperties) * icd_ext_count,
+        if (icd_ext_count > 0){
+            icd_props_list = loader_instance_heap_alloc(icd_term->this_instance, sizeof(VkExtensionProperties) * icd_ext_count,
                                                     VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
-        if (NULL == icd_props_list) {
-            res = VK_ERROR_OUT_OF_HOST_MEMORY;
-            goto out;
+            if (NULL == icd_props_list) {
+                res = VK_ERROR_OUT_OF_HOST_MEMORY;
+                goto out;
+            }
         }
     }
 
