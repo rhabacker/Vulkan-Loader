@@ -6162,7 +6162,6 @@ VkResult loader_create_device_chain(const VkPhysicalDevice pd, const VkDeviceCre
 
                     // Replace the old struct in the pNext chain with this one.
                     pPrev->pNext = (VkBaseOutStructure *)temp_struct;
-                    pNext = (VkBaseOutStructure *)temp_struct;
                 }
                 break;
             }
@@ -6824,7 +6823,6 @@ VKAPI_ATTR VkResult VKAPI_CALL terminator_CreateDevice(VkPhysicalDevice physical
 
                     // Replace the old struct in the pNext chain with this one.
                     pPrev->pNext = (VkBaseOutStructure *)temp_struct;
-                    pNext = (VkBaseOutStructure *)temp_struct;
                 }
                 break;
             }
