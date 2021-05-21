@@ -6175,7 +6175,7 @@ VkResult loader_create_device_chain(const VkPhysicalDevice pd, const VkDeviceCre
         layer_device_link_info = loader_stack_alloc(sizeof(VkLayerDeviceLink) * dev->expanded_activated_layer_list.count);
         if (!layer_device_link_info) {
             loader_log(inst, VULKAN_LOADER_ERROR_BIT, 0,
-                    "loader_create_device_chain: Failed to alloc Device objects for layer. Skipping Layer.");
+                       "loader_create_device_chain: Failed to alloc Device objects for layer. Skipping Layer.");
             return VK_ERROR_OUT_OF_HOST_MEMORY;
         }
 
@@ -7045,7 +7045,20 @@ out:
     if (VK_SUCCESS != res) {
         if (NULL != new_phys_devs) {
             for (uint32_t i = 0; i < total_count; i++) {
-                loader_instance_heap_free(inst, new_phys_devs[i]);
+                // If an OOM occurred inside the copying of the new physical devices into the existing array
+                // will leave some of the old physical devices in the array which may have been copied into
+                // the new array, leading to them being freed twice. To avoid this we just make sure to not
+                // delete physical devices which were copied.
+                bool found = false;
+                for (uint32_t old_idx = 0; old_idx < inst->phys_dev_count_tramp; old_idx++) {
+                    if (new_phys_devs[i] == inst->phys_devs_tramp[old_idx]) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    loader_instance_heap_free(inst, new_phys_devs[i]);
+                }
             }
             loader_instance_heap_free(inst, new_phys_devs);
         }
@@ -7232,7 +7245,7 @@ VkResult setupLoaderTermPhysDevs(struct loader_instance *inst) {
     if (NULL == icd_phys_dev_array) {
         loader_log(inst, VULKAN_LOADER_ERROR_BIT, 0,
                    "setupLoaderTermPhysDevs:  Failed to allocate temporary ICD Physical device info array of size %d",
-                   inst->total_gpu_count);
+                   inst->total_icd_count);
         res = VK_ERROR_OUT_OF_HOST_MEMORY;
         goto out;
     }
@@ -7385,7 +7398,22 @@ out:
         if (NULL != new_phys_devs) {
             // We've encountered an error, so we should free the new buffers.
             for (uint32_t i = 0; i < inst->total_gpu_count; i++) {
-                loader_instance_heap_free(inst, new_phys_devs[i]);
+                // If an OOM occurred inside the copying of the new physical devices into the existing array
+                // will leave some of the old physical devices in the array which may have been copied into
+                // the new array, leading to them being freed twice. To avoid this we just make sure to not
+                // delete physical devices which were copied.
+                bool found = false;
+                if (NULL != inst->phys_devs_term) {
+                    for (uint32_t old_idx = 0; old_idx < inst->phys_dev_count_term; old_idx++) {
+                        if (new_phys_devs[i] == inst->phys_devs_term[old_idx]) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found) {
+                    loader_instance_heap_free(inst, new_phys_devs[i]);
+                }
             }
             loader_instance_heap_free(inst, new_phys_devs);
         }
@@ -7603,7 +7631,7 @@ VKAPI_ATTR VkResult VKAPI_CALL terminator_EnumerateDeviceExtensionProperties(VkP
         }
         if (icd_ext_count > 0){
             icd_props_list = loader_instance_heap_alloc(icd_term->this_instance, sizeof(VkExtensionProperties) * icd_ext_count,
-                                                    VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
+                                                        VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
             if (NULL == icd_props_list) {
                 res = VK_ERROR_OUT_OF_HOST_MEMORY;
                 goto out;
