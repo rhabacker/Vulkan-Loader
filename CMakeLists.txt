@@ -112,25 +112,14 @@ if(BUILD_STATIC_LOADER)
         "or tested as part of the loader. Use it at your own risk.")
 endif()
 
-if (TARGET Vulkan::Headers)
-    message(STATUS "Using Vulkan headers from Vulkan::Headers target")
-    get_target_property(VulkanHeaders_INCLUDE_DIRS Vulkan::Headers INTERFACE_INCLUDE_DIRECTORIES)
-    get_target_property(VulkanRegistry_DIR Vulkan::Registry INTERFACE_INCLUDE_DIRECTORIES)
-else()
-    find_package(VulkanHeaders)
-    if(NOT ${VulkanHeaders_FOUND})
-        message(FATAL_ERROR "Could not find Vulkan headers path. This can be fixed by setting VULKAN_HEADERS_INSTALL_DIR to an "
-                            "installation of the Vulkan-Headers repository.")
-    endif()
-    if(NOT ${VulkanRegistry_FOUND})
-        message(FATAL_ERROR "Could not find Vulkan registry path. This can be fixed by setting VULKAN_HEADERS_INSTALL_DIR to an "
-                            "installation of the Vulkan-Headers repository.")
-    endif()
-
-    # set up the Vulkan::Headers target for consistency
-    add_library(vulkan-headers INTERFACE)
-    target_include_directories(vulkan-headers SYSTEM INTERFACE "${VulkanHeaders_INCLUDE_DIRS}")
-    add_library(Vulkan::Headers ALIAS vulkan-headers)
+find_package(VulkanHeaders REQUIRED)
+if(NOT ${VulkanHeaders_FOUND})
+    message(FATAL_ERROR "Could not find Vulkan headers path. This can be fixed by setting VULKAN_HEADERS_INSTALL_DIR to an "
+                        "installation of the Vulkan-Headers repository.")
+endif()
+if(NOT ${VulkanRegistry_FOUND})
+    message(FATAL_ERROR "Could not find Vulkan registry path. This can be fixed by setting VULKAN_HEADERS_INSTALL_DIR to an "
+                        "installation of the Vulkan-Headers repository.")
 endif()
 
 option(USE_CCACHE "Use ccache" OFF)
@@ -433,3 +422,14 @@ if(BUILD_TESTS)
     endif()
 
 endif()
+
+include(VulkanMacros)
+
+vulkan_add_cmake_support_files(
+    CONFIG_TEMPLATE cmake/VulkanConfig.cmake.in
+    PREFIX Vulkan
+    VERSION "${VulkanHeaders_VERSION_MAJOR}.${VulkanHeaders_VERSION_MINOR}.${VulkanHeaders_VERSION_PATCH}"
+    NO_EXPORT
+    )
+
+vulkan_add_feature_summary()
