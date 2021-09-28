@@ -1,0 +1,5 @@
+include(CMakeFindDependencyMacro)
+
+find_dependency(Vulkan::Headers)
+include("${CMAKE_CURRENT_LIST_DIR}/VulkanTargets.cmake")
+add_library(Vulkan::Vulkan ALIAS vulkan)
